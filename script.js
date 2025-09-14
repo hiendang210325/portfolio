@@ -749,7 +749,7 @@ function createTypewriterEffect() {
   // Typewriter bắt đầu ngay lập tức - không delay
   typewriterAnimation(titleLine, "Hello, I am", 0, () => {
     // Sau khi xong dòng 1, bắt đầu dòng 2 ngay
-    typewriterAnimation(titleName, "Hien Dang", 0, () => {
+    typewriterAnimation(titleName, "Dang Van Hien", 0, () => {
       // Sau khi xong tên, bắt đầu subtitle ngay
       typewriterAnimation(titleSubtitle, "Software Engineer", 0, () => {
         // Cuối cùng là description
