@@ -7,8 +7,8 @@ window.addEventListener("load", () => {
 
   gsap.to(loadingScreen, {
     opacity: 0,
-    duration: 0.8, // Giảm thời gian loading
-    delay: 1.5, // Giảm delay loading
+    duration: 0.5, // Giảm thời gian loading xuống còn 0.5s
+    delay: 0.8, // Giảm delay loading xuống còn 0.8s
     onComplete: () => {
       loadingScreen.style.display = "none";
       initAnimations(); // Typewriter sẽ bắt đầu ngay lập tức
@@ -16,16 +16,14 @@ window.addEventListener("load", () => {
   });
 });
 
-// ===== CUSTOM CURSOR =====
+// ===== CUSTOM CURSOR (OPTIMIZED) =====
 const cursor = document.querySelector(".cursor");
 const cursorFollower = document.querySelector(".cursor-follower");
 
+// Use transform for better performance
 document.addEventListener("mousemove", (e) => {
-  cursor.style.left = e.clientX + "px";
-  cursor.style.top = e.clientY + "px";
-
-  cursorFollower.style.left = e.clientX + "px";
-  cursorFollower.style.top = e.clientY + "px";
+  cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+  cursorFollower.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
 });
 
 // Cursor hover effects
@@ -49,12 +47,19 @@ const navLinks = document.querySelectorAll(".nav-link");
 const hamburger = document.querySelector(".hamburger");
 const navMenu = document.querySelector(".nav-menu");
 
-// Navbar scroll effect
+// Optimized navbar scroll effect with throttling
+let isScrolling = false;
 window.addEventListener("scroll", () => {
-  if (window.scrollY > 100) {
-    navbar.classList.add("scrolled");
-  } else {
-    navbar.classList.remove("scrolled");
+  if (!isScrolling) {
+    window.requestAnimationFrame(() => {
+      if (window.scrollY > 100) {
+        navbar.classList.add("scrolled");
+      } else {
+        navbar.classList.remove("scrolled");
+      }
+      isScrolling = false;
+    });
+    isScrolling = true;
   }
 });
 
@@ -101,8 +106,8 @@ function initHeroBackground() {
   renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
 
-  // Create subtle particle system (smaller, more transparent)
-  const particleCount = 200;
+  // Create optimized particle system (reduced count for better performance)
+  const particleCount = 50;
   const positions = new Float32Array(particleCount * 3);
   const colors = new Float32Array(particleCount * 3);
 
@@ -125,17 +130,17 @@ function initHeroBackground() {
     vertexColors: true,
     blending: THREE.AdditiveBlending,
     transparent: true,
-    opacity: 0.15,
+    opacity: 0.1,
   });
 
   particles = new THREE.Points(geometry, material);
   scene.add(particles);
 
-  // Create floating geometric shapes
+  // Create floating geometric shapes (reduced for performance)
   geometryShapes = [];
-  const shapes = ["box", "sphere", "torus"];
+  const shapes = ["box", "sphere"];
 
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 8; i++) {
     let geometry, material, mesh;
     const shapeType = shapes[Math.floor(Math.random() * shapes.length)];
 
@@ -154,7 +159,7 @@ function initHeroBackground() {
     material = new THREE.MeshBasicMaterial({
       color: new THREE.Color(0, 0.96, 1),
       transparent: true,
-      opacity: 0.05,
+      opacity: 0.03,
       wireframe: true,
     });
 
@@ -177,20 +182,25 @@ function initHeroBackground() {
 
   camera.position.z = 50;
 
-  // Animation loop
+  // Optimized animation loop with reduced frequency
+  let frameCount = 0;
   function animate() {
     requestAnimationFrame(animate);
+    frameCount++;
 
-    // Subtle particle movement
-    particles.rotation.x += 0.0005;
-    particles.rotation.y += 0.001;
+    // Only update every 2nd frame for better performance
+    if (frameCount % 2 === 0) {
+      // Subtle particle movement
+      particles.rotation.x += 0.0003;
+      particles.rotation.y += 0.0006;
 
-    // Animate geometric shapes
-    geometryShapes.forEach((shape, index) => {
-      shape.rotation.x += 0.005 + index * 0.001;
-      shape.rotation.y += 0.003 + index * 0.0005;
-      shape.position.y += Math.sin(Date.now() * 0.001 + index) * 0.01;
-    });
+      // Animate geometric shapes (reduced calculations)
+      geometryShapes.forEach((shape, index) => {
+        shape.rotation.x += 0.003 + index * 0.0005;
+        shape.rotation.y += 0.002 + index * 0.0003;
+        shape.position.y += Math.sin(Date.now() * 0.0005 + index) * 0.005;
+      });
+    }
 
     renderer.render(scene, camera);
   }
@@ -746,17 +756,17 @@ function createTypewriterEffect() {
     opacity: 0,
   });
 
-  // Typewriter bắt đầu ngay lập tức - không delay
+  // Typewriter bắt đầu ngay lập tức - tối ưu delay
   typewriterAnimation(titleLine, "Hello, I am", 0, () => {
     // Sau khi xong dòng 1, bắt đầu dòng 2 ngay
-    typewriterAnimation(titleName, "Dang Van Hien", 0, () => {
+    typewriterAnimation(titleName, "Dang Van Hien", 0.1, () => {
       // Sau khi xong tên, bắt đầu subtitle ngay
-      typewriterAnimation(titleSubtitle, "Software Engineer", 0, () => {
+      typewriterAnimation(titleSubtitle, "Software Engineer", 0.1, () => {
         // Cuối cùng là description
         typewriterAnimation(
           heroDescription,
           "I create unique web experiences with modern technology and creative design",
-          0
+          0.1
         );
       });
     });
@@ -781,9 +791,9 @@ function typewriterAnimation(element, text, delay, callback) {
         setTimeout(() => {
           element.innerHTML = text;
           if (callback) callback();
-        }, 200); // Giảm từ 500ms xuống 200ms
+        }, 100); // Giảm từ 200ms xuống 100ms
       }
-    }, 50); // Tăng tốc độ gõ: từ 80ms xuống 50ms
+    }, 30); // Tăng tốc độ gõ: từ 50ms xuống 30ms
   }, delay * 1000);
 }
 

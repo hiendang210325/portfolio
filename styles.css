@@ -27,29 +27,13 @@ html {
 
 body {
   font-family: "Poppins", sans-serif;
-  background: radial-gradient(
-      circle at 20% 20%,
-      rgba(0, 245, 255, 0.1) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 80% 80%,
-      rgba(255, 107, 107, 0.1) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(76, 201, 196, 0.05) 0%,
-      transparent 50%
-    ),
-    linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
-  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
-  background-attachment: fixed;
-  animation: backgroundShift 20s ease-in-out infinite;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
   color: var(--light-text);
   overflow-x: hidden;
   cursor: none;
   position: relative;
+  /* Tối ưu performance */
+  will-change: auto;
 }
 
 body::before {
@@ -59,36 +43,13 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(0,245,255,0.1)"/></pattern></defs><rect width="200" height="200" fill="url(%23dots)"/></svg>');
-  animation: dotsMove 30s linear infinite;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(0,245,255,0.05)"/></pattern></defs><rect width="200" height="200" fill="url(%23dots)"/></svg>');
   pointer-events: none;
   z-index: -1;
+  opacity: 0.5;
 }
 
-@keyframes backgroundShift {
-  0%,
-  100% {
-    background-position: 0% 0%, 100% 100%, 50% 50%, 0% 0%;
-  }
-  25% {
-    background-position: 100% 0%, 0% 100%, 80% 20%, 25% 25%;
-  }
-  50% {
-    background-position: 100% 100%, 0% 0%, 20% 80%, 50% 50%;
-  }
-  75% {
-    background-position: 0% 100%, 100% 0%, 70% 30%, 75% 75%;
-  }
-}
-
-@keyframes dotsMove {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(20px, 20px);
-  }
-}
+/* Removed heavy background animations for better performance */
 
 .container {
   max-width: 1200px;
@@ -178,17 +139,20 @@ body::before {
   }
 }
 
-/* ===== CUSTOM CURSOR ===== */
+/* ===== CUSTOM CURSOR (OPTIMIZED) ===== */
 .cursor {
   width: 20px;
   height: 20px;
   border: 2px solid var(--primary-color);
   border-radius: 50%;
   position: fixed;
+  top: 0;
+  left: 0;
   pointer-events: none;
   z-index: 9999;
-  transition: all 0.1s ease;
+  transition: transform 0.1s ease;
   mix-blend-mode: difference;
+  will-change: transform;
 }
 
 .cursor-follower {
@@ -197,10 +161,13 @@ body::before {
   background: var(--glow-color);
   border-radius: 50%;
   position: fixed;
+  top: 0;
+  left: 0;
   pointer-events: none;
   z-index: 9998;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease;
   opacity: 0.3;
+  will-change: transform;
 }
 
 /* ===== NAVIGATION ===== */
@@ -402,34 +369,14 @@ body::before {
   width: 100%;
   height: 100%;
   background: radial-gradient(
-      circle at 10% 20%,
-      rgba(0, 245, 255, 0.05) 0%,
-      transparent 20%
-    ),
-    radial-gradient(
-      circle at 90% 80%,
-      rgba(255, 107, 107, 0.05) 0%,
-      transparent 20%
-    ),
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(76, 201, 196, 0.05) 0%,
-      transparent 20%
-    );
-  animation: breathe 8s ease-in-out infinite;
+    circle at 50% 50%,
+    rgba(0, 245, 255, 0.03) 0%,
+    transparent 50%
+  );
+  opacity: 0.5;
 }
 
-@keyframes breathe {
-  0%,
-  100% {
-    opacity: 0.3;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05);
-  }
-}
+/* Removed breathe animation for better performance */
 
 .floating-elements {
   position: absolute;
@@ -443,8 +390,9 @@ body::before {
 
 .floating-element {
   position: absolute;
-  opacity: 0.15;
-  animation: float 8s ease-in-out infinite;
+  opacity: 0.08;
+  animation: float 12s ease-in-out infinite;
+  will-change: transform;
 }
 
 .floating-element:nth-child(1) {
