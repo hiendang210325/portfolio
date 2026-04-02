@@ -28,7 +28,7 @@ document.addEventListener("mousemove", (e) => {
 
 // Cursor hover effects
 document
-  .querySelectorAll("a, button, .project-card, .skill-item")
+  .querySelectorAll("a, button, .project-card, .skill-item, .experience-body")
   .forEach((el) => {
     el.addEventListener("mouseenter", () => {
       cursor.style.transform = "scale(1.5)";
@@ -271,6 +271,22 @@ function initAnimations() {
     x: 100,
     opacity: 0,
     duration: 1,
+  });
+
+  // Experience animation
+  gsap.utils.toArray(".experience-card").forEach((card, index) => {
+    gsap.from(card, {
+      scrollTrigger: {
+        trigger: card,
+        start: "top 82%",
+      },
+      x: index % 2 === 0 ? -60 : 60,
+      y: 50,
+      opacity: 0,
+      duration: 0.9,
+      delay: index * 0.12,
+      ease: "power2.out",
+    });
   });
 
   // Stats counter animation
